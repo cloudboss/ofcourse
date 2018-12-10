@@ -257,13 +257,13 @@ func out(resource Resource, dir string, input []byte) ([]byte, error) {
 func Check(resource Resource) {
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		internalLogger.Errorf("%\n", err)
+		internalLogger.Errorf("%s\n", err)
 		os.Exit(1)
 	}
 
 	output, err := check(resource, input)
 	if err != nil {
-		internalLogger.Errorf("%\n", err)
+		internalLogger.Errorf("%s\n", err)
 		os.Exit(1)
 	}
 
@@ -307,13 +307,13 @@ func Out(resource Resource) {
 
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		internalLogger.Errorf("%\n", err)
+		internalLogger.Errorf("%s\n", err)
 		os.Exit(1)
 	}
 
 	output, err := out(resource, dir, input)
 	if err != nil {
-		internalLogger.Errorf("%\n", err)
+		internalLogger.Errorf("%s\n", err)
 		os.Exit(1)
 	}
 
