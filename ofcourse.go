@@ -115,7 +115,13 @@ type Version map[string]string
 
 // Metadata represents Concourse metadata, which is a set of key/value pairs that
 // are used for printing extra information to the Concourse UI on `get` or `put`.
-type Metadata map[string]string
+type Metadata []NameVal
+
+// NameVal is one item of a Metadata array.
+type NameVal struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
+}
 
 // Source is the pipeline source configuration for the resource.
 type Source map[string]interface{}
@@ -142,14 +148,9 @@ type OutInput struct {
 	Params Params `json:"params"`
 }
 
-type nameVal struct {
-	Name  string `json:"name"`
-	Value string `json:"value"`
-}
-
 type inOutOutput struct {
-	Version  Version   `json:"version"`
-	Metadata []nameVal `json:"metadata"`
+	Version  Version  `json:"version"`
+	Metadata Metadata `json:"metadata"`
 }
 
 // Resource is a type that contains Check, In, and Out methods. The user of this
@@ -158,18 +159,6 @@ type Resource interface {
 	Check(src Source, ver Version, log *Logger) ([]Version, error)
 	In(dir string, src Source, par Params, ver Version, log *Logger) (Version, Metadata, error)
 	Out(dir string, src Source, par Params, log *Logger) (Version, Metadata, error)
-}
-
-func metadataToNameVals(metadata Metadata) []nameVal {
-	nameVals := []nameVal{}
-	for name, value := range metadata {
-		entry := nameVal{
-			Name:  name,
-			Value: value,
-		}
-		nameVals = append(nameVals, entry)
-	}
-	return nameVals
 }
 
 func check(resource Resource, input []byte) ([]byte, error) {
@@ -220,7 +209,7 @@ func in(resource Resource, dir string, input []byte) ([]byte, error) {
 
 	output := inOutOutput{
 		Version:  version,
-		Metadata: metadataToNameVals(metadata),
+		Metadata: metadata,
 	}
 	return json.Marshal(output)
 }
@@ -246,7 +235,7 @@ func out(resource Resource, dir string, input []byte) ([]byte, error) {
 
 	output := inOutOutput{
 		Version:  version,
-		Metadata: metadataToNameVals(metadata),
+		Metadata: metadata,
 	}
 	return json.Marshal(output)
 }

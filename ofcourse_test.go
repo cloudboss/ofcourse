@@ -42,7 +42,10 @@ func (r *testResource) In(dir string, source Source, params Params,
 		"c": "d",
 	}
 	metadata := Metadata{
-		"e": "f",
+		{
+			Name:  "e",
+			Value: "f",
+		},
 	}
 	return newVersion, metadata, nil
 }
@@ -53,7 +56,10 @@ func (r *testResource) Out(dir string, source Source, params Params,
 		"c": "d",
 	}
 	metadata := Metadata{
-		"e": "f",
+		{
+			Name:  "e",
+			Value: "f",
+		},
 	}
 	return version, metadata, nil
 }
