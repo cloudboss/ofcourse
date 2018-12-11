@@ -27,8 +27,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-
-	"github.com/fatih/color"
 )
 
 const (
@@ -85,28 +83,32 @@ func NewLogger(level string) *Logger {
 // Errorf logs a red message to the Concourse UI.
 func (l *Logger) Errorf(message string, args ...interface{}) {
 	if l.Level >= errorLevel {
-		color.New(color.FgRed).Fprintf(color.Error, message, args...)
+		colorMessage := fmt.Sprintf("\033[1;31m%s\033[0m", message)
+		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
 // Warnf logs a yellow message to the Concourse UI.
 func (l *Logger) Warnf(message string, args ...interface{}) {
 	if l.Level >= warnLevel {
-		color.New(color.FgYellow).Fprintf(color.Error, message, args...)
+		colorMessage := fmt.Sprintf("\033[1;33m%s\033[0m", message)
+		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
 // Infof logs a green message to the Concourse UI.
 func (l *Logger) Infof(message string, args ...interface{}) {
 	if l.Level >= infoLevel {
-		color.New(color.FgGreen).Fprintf(color.Error, message, args...)
+		colorMessage := fmt.Sprintf("\033[1;32m%s\033[0m", message)
+		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
 // Debugf logs a blue message to the Concourse UI.
 func (l *Logger) Debugf(message string, args ...interface{}) {
 	if l.Level >= debugLevel {
-		color.New(color.FgBlue).Fprintf(color.Error, message, args...)
+		colorMessage := fmt.Sprintf("\033[1;34m%s\033[0m", message)
+		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
