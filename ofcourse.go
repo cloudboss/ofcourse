@@ -85,28 +85,28 @@ func NewLogger(level string) *Logger {
 // Errorf logs a red message to the Concourse UI.
 func (l *Logger) Errorf(message string, args ...interface{}) {
 	if l.Level >= errorLevel {
-		color.New(color.FgHiRed).Fprintf(color.Error, message, args...)
+		color.New(color.FgRed).Fprintf(color.Error, message, args...)
 	}
 }
 
 // Warnf logs a yellow message to the Concourse UI.
 func (l *Logger) Warnf(message string, args ...interface{}) {
 	if l.Level >= warnLevel {
-		color.New(color.FgHiYellow).Fprintf(color.Error, message, args...)
+		color.New(color.FgYellow).Fprintf(color.Error, message, args...)
 	}
 }
 
 // Infof logs a green message to the Concourse UI.
 func (l *Logger) Infof(message string, args ...interface{}) {
 	if l.Level >= infoLevel {
-		color.New(color.FgHiGreen).Fprintf(color.Error, message, args...)
+		color.New(color.FgGreen).Fprintf(color.Error, message, args...)
 	}
 }
 
 // Debugf logs a blue message to the Concourse UI.
 func (l *Logger) Debugf(message string, args ...interface{}) {
 	if l.Level >= debugLevel {
-		color.New(color.FgHiBlue).Fprintf(color.Error, message, args...)
+		color.New(color.FgBlue).Fprintf(color.Error, message, args...)
 	}
 }
 
