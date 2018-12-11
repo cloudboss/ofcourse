@@ -80,34 +80,34 @@ func NewLogger(level string) *Logger {
 	return &Logger{Level: intLevel}
 }
 
-// Errorf logs a red message to the Concourse UI.
+// Errorf logs a red formatted string to the Concourse UI with newline.
 func (l *Logger) Errorf(message string, args ...interface{}) {
 	if l.Level >= errorLevel {
-		colorMessage := fmt.Sprintf("\033[1;31m%s\033[0m", message)
+		colorMessage := fmt.Sprintf("\033[1;31m%s\033[0m\n", message)
 		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
-// Warnf logs a yellow message to the Concourse UI.
+// Warnf logs a yellow formatted string to the Concourse UI with newline.
 func (l *Logger) Warnf(message string, args ...interface{}) {
 	if l.Level >= warnLevel {
-		colorMessage := fmt.Sprintf("\033[1;33m%s\033[0m", message)
+		colorMessage := fmt.Sprintf("\033[1;33m%s\033[0m\n", message)
 		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
-// Infof logs a green message to the Concourse UI.
+// Infof logs a green formatted string to the Concourse UI with newline.
 func (l *Logger) Infof(message string, args ...interface{}) {
 	if l.Level >= infoLevel {
-		colorMessage := fmt.Sprintf("\033[1;32m%s\033[0m", message)
+		colorMessage := fmt.Sprintf("\033[1;32m%s\033[0m\n", message)
 		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
 
-// Debugf logs a blue message to the Concourse UI.
+// Debugf logs a blue formatted string to the Concourse UI with newline.
 func (l *Logger) Debugf(message string, args ...interface{}) {
 	if l.Level >= debugLevel {
-		colorMessage := fmt.Sprintf("\033[1;34m%s\033[0m", message)
+		colorMessage := fmt.Sprintf("\033[1;34m%s\033[0m\n", message)
 		fmt.Fprintf(os.Stderr, colorMessage)
 	}
 }
@@ -248,13 +248,13 @@ func out(resource Resource, dir string, input []byte) ([]byte, error) {
 func Check(resource Resource) {
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
 	output, err := check(resource, input)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
@@ -266,20 +266,20 @@ func Check(resource Resource) {
 // an instance of the resource and pass it to this function.
 func In(resource Resource) {
 	if len(os.Args) < 2 {
-		internalLogger.Errorf("missing directory argument\n")
+		internalLogger.Errorf("missing directory argument")
 		os.Exit(1)
 	}
 	dir := os.Args[1]
 
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
 	output, err := in(resource, dir, input)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
@@ -291,20 +291,20 @@ func In(resource Resource) {
 // an instance of the resource and pass it to this function.
 func Out(resource Resource) {
 	if len(os.Args) < 2 {
-		internalLogger.Errorf("missing directory argument\n")
+		internalLogger.Errorf("missing directory argument")
 		os.Exit(1)
 	}
 	dir := os.Args[1]
 
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
 	output, err := out(resource, dir, input)
 	if err != nil {
-		internalLogger.Errorf("%s\n", err)
+		internalLogger.Errorf(err.Error())
 		os.Exit(1)
 	}
 
