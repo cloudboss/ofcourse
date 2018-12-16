@@ -170,11 +170,9 @@ func check(resource Resource, input []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	var logger *Logger
+	logger := NewLogger("info")
 	if logLevel, ok := checkInput.Source["log_level"].(string); ok {
 		logger = NewLogger(logLevel)
-	} else {
-		logger = NewLogger("info")
 	}
 
 	versions, err := resource.Check(checkInput.Source, checkInput.Version, logger)
@@ -197,11 +195,9 @@ func in(resource Resource, outDir string, input []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	var logger *Logger
+	logger := NewLogger("info")
 	if logLevel, ok := inInput.Source["log_level"].(string); ok {
 		logger = NewLogger(logLevel)
-	} else {
-		logger = NewLogger("info")
 	}
 
 	version, metadata, err := resource.In(outDir, inInput.Source, inInput.Params, inInput.Version, logger)
@@ -223,11 +219,9 @@ func out(resource Resource, inDir string, input []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	var logger *Logger
+	logger := NewLogger("info")
 	if logLevel, ok := outInput.Source["log_level"].(string); ok {
 		logger = NewLogger(logLevel)
-	} else {
-		logger = NewLogger("info")
 	}
 
 	version, metadata, err := resource.Out(inDir, outInput.Source, outInput.Params, logger)
