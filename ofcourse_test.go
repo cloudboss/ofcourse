@@ -135,49 +135,42 @@ func Test_in(t *testing.T) {
 	eResource := &emptyResource{}
 
 	var tests = []struct {
-		outDir string
 		input  []byte
 		output []byte
 	}{
 		{
-			"foo",
 			[]byte(`{"source":{},"params":{},"version":null}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{},"params":{},"version":{"a":"b"}}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{"a":"b"},"params":{"x":"y"},"version":{"a":"b"}}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{"a":"b"},"params":{"x":"y"},"version":null}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 	}
 	for _, test := range tests {
-		output, _ := in(resource, test.outDir, test.input)
+		output, _ := in(resource, "foo", test.input)
 		assert.Equal(t, output, test.output)
 	}
 
 	tests = []struct {
-		outDir string
 		input  []byte
 		output []byte
 	}{
 		{
-			"foo",
 			[]byte(`{"source":{},"version":null}`),
 			[]byte(`{"version":{},"metadata":[]}`),
 		},
 	}
 	for _, test := range tests {
-		output, _ := in(eResource, test.outDir, test.input)
+		output, _ := in(eResource, "foo", test.input)
 		assert.Equal(t, output, test.output)
 	}
 }
@@ -187,49 +180,42 @@ func Test_out(t *testing.T) {
 	eResource := &emptyResource{}
 
 	var tests = []struct {
-		inDir  string
 		input  []byte
 		output []byte
 	}{
 		{
-			"foo",
 			[]byte(`{"source":{},"params":{},"version":null}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{},"params":{},"version":{"a":"b"}}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{"a":"b"},"params":{"x":"y"},"version":{"a":"b"}}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 		{
-			"foo",
 			[]byte(`{"source":{"a":"b"},"params":{"x":"y"},"version":null}`),
 			[]byte(`{"version":{"c":"d"},"metadata":[{"name":"e","value":"f"}]}`),
 		},
 	}
 	for _, test := range tests {
-		output, _ := out(resource, test.inDir, test.input)
+		output, _ := out(resource, "foo", test.input)
 		assert.Equal(t, output, test.output)
 	}
 
 	tests = []struct {
-		inDir  string
 		input  []byte
 		output []byte
 	}{
 		{
-			"foo",
 			[]byte(`{"source":{},"version":null}`),
 			[]byte(`{"version":{},"metadata":[]}`),
 		},
 	}
 	for _, test := range tests {
-		output, _ := out(eResource, test.inDir, test.input)
+		output, _ := out(eResource, "foo", test.input)
 		assert.Equal(t, output, test.output)
 	}
 }
