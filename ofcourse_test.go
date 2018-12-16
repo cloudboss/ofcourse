@@ -25,9 +25,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type testResource struct{}
+type resource struct{}
 
-func (r *testResource) Check(source Source, version Version, logger *Logger) ([]Version, error) {
+func (r *resource) Check(source Source, version Version, logger *Logger) ([]Version, error) {
 	versions := []Version{
 		{
 			"c": "d",
@@ -36,7 +36,7 @@ func (r *testResource) Check(source Source, version Version, logger *Logger) ([]
 	return versions, nil
 }
 
-func (r *testResource) In(outDir string, source Source, params Params,
+func (r *resource) In(outDir string, source Source, params Params,
 	version Version, logger *Logger) (Version, Metadata, error) {
 	newVersion := Version{
 		"c": "d",
@@ -50,7 +50,7 @@ func (r *testResource) In(outDir string, source Source, params Params,
 	return newVersion, metadata, nil
 }
 
-func (r *testResource) Out(inDir string, source Source, params Params,
+func (r *resource) Out(inDir string, source Source, params Params,
 	logger *Logger) (Version, Metadata, error) {
 	version := Version{
 		"c": "d",
@@ -64,8 +64,30 @@ func (r *testResource) Out(inDir string, source Source, params Params,
 	return version, metadata, nil
 }
 
+type emptyResource struct{}
+
+func (r *emptyResource) Check(source Source, version Version, logger *Logger) ([]Version, error) {
+	versions := []Version{}
+	return versions, nil
+}
+
+func (r *emptyResource) In(outDir string, source Source, params Params,
+	version Version, logger *Logger) (Version, Metadata, error) {
+	newVersion := Version{}
+	metadata := Metadata{}
+	return newVersion, metadata, nil
+}
+
+func (r *emptyResource) Out(inDir string, source Source, params Params,
+	logger *Logger) (Version, Metadata, error) {
+	version := Version{}
+	metadata := Metadata{}
+	return version, metadata, nil
+}
+
 func Test_check(t *testing.T) {
-	resource := &testResource{}
+	resource := &resource{}
+	eResource := &emptyResource{}
 
 	var tests = []struct {
 		input  []byte
@@ -92,10 +114,25 @@ func Test_check(t *testing.T) {
 		output, _ := check(resource, test.input)
 		assert.Equal(t, output, test.output)
 	}
+
+	tests = []struct {
+		input  []byte
+		output []byte
+	}{
+		{
+			[]byte(`{"source":{},"version":null}`),
+			[]byte(`[]`),
+		},
+	}
+	for _, test := range tests {
+		output, _ := check(eResource, test.input)
+		assert.Equal(t, output, test.output)
+	}
 }
 
 func Test_in(t *testing.T) {
-	resource := &testResource{}
+	resource := &resource{}
+	eResource := &emptyResource{}
 
 	var tests = []struct {
 		outDir string
@@ -127,10 +164,27 @@ func Test_in(t *testing.T) {
 		output, _ := in(resource, test.outDir, test.input)
 		assert.Equal(t, output, test.output)
 	}
+
+	tests = []struct {
+		outDir string
+		input  []byte
+		output []byte
+	}{
+		{
+			"foo",
+			[]byte(`{"source":{},"version":null}`),
+			[]byte(`{"version":{},"metadata":[]}`),
+		},
+	}
+	for _, test := range tests {
+		output, _ := in(eResource, test.outDir, test.input)
+		assert.Equal(t, output, test.output)
+	}
 }
 
 func Test_out(t *testing.T) {
-	resource := &testResource{}
+	resource := &resource{}
+	eResource := &emptyResource{}
 
 	var tests = []struct {
 		inDir  string
@@ -160,6 +214,22 @@ func Test_out(t *testing.T) {
 	}
 	for _, test := range tests {
 		output, _ := out(resource, test.inDir, test.input)
+		assert.Equal(t, output, test.output)
+	}
+
+	tests = []struct {
+		inDir  string
+		input  []byte
+		output []byte
+	}{
+		{
+			"foo",
+			[]byte(`{"source":{},"version":null}`),
+			[]byte(`{"version":{},"metadata":[]}`),
+		},
+	}
+	for _, test := range tests {
+		output, _ := out(eResource, test.inDir, test.input)
 		assert.Equal(t, output, test.output)
 	}
 }
