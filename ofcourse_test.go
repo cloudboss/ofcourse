@@ -36,7 +36,7 @@ func (r *testResource) Check(source Source, version Version, logger *Logger) ([]
 	return versions, nil
 }
 
-func (r *testResource) In(dir string, source Source, params Params,
+func (r *testResource) In(outDir string, source Source, params Params,
 	version Version, logger *Logger) (Version, Metadata, error) {
 	newVersion := Version{
 		"c": "d",
@@ -50,7 +50,7 @@ func (r *testResource) In(dir string, source Source, params Params,
 	return newVersion, metadata, nil
 }
 
-func (r *testResource) Out(dir string, source Source, params Params,
+func (r *testResource) Out(inDir string, source Source, params Params,
 	logger *Logger) (Version, Metadata, error) {
 	version := Version{
 		"c": "d",
@@ -98,7 +98,7 @@ func Test_in(t *testing.T) {
 	resource := &testResource{}
 
 	var tests = []struct {
-		dir    string
+		outDir string
 		input  []byte
 		output []byte
 	}{
@@ -124,7 +124,7 @@ func Test_in(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		output, _ := in(resource, test.dir, test.input)
+		output, _ := in(resource, test.outDir, test.input)
 		assert.Equal(t, output, test.output)
 	}
 }
@@ -133,7 +133,7 @@ func Test_out(t *testing.T) {
 	resource := &testResource{}
 
 	var tests = []struct {
-		dir    string
+		inDir  string
 		input  []byte
 		output []byte
 	}{
@@ -159,7 +159,7 @@ func Test_out(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		output, _ := out(resource, test.dir, test.input)
+		output, _ := out(resource, test.inDir, test.input)
 		assert.Equal(t, output, test.output)
 	}
 }

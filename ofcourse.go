@@ -159,8 +159,8 @@ type inOutOutput struct {
 // library must implement this interface.
 type Resource interface {
 	Check(src Source, ver Version, log *Logger) ([]Version, error)
-	In(dir string, src Source, par Params, ver Version, log *Logger) (Version, Metadata, error)
-	Out(dir string, src Source, par Params, log *Logger) (Version, Metadata, error)
+	In(outDir string, src Source, par Params, ver Version, log *Logger) (Version, Metadata, error)
+	Out(inDir string, src Source, par Params, log *Logger) (Version, Metadata, error)
 }
 
 func check(resource Resource, input []byte) ([]byte, error) {
@@ -190,7 +190,7 @@ func check(resource Resource, input []byte) ([]byte, error) {
 	return versionBytes, nil
 }
 
-func in(resource Resource, dir string, input []byte) ([]byte, error) {
+func in(resource Resource, outDir string, input []byte) ([]byte, error) {
 	var inInput InInput
 	err := json.Unmarshal(input, &inInput)
 	if err != nil {
@@ -204,7 +204,7 @@ func in(resource Resource, dir string, input []byte) ([]byte, error) {
 		logger = NewLogger("info")
 	}
 
-	version, metadata, err := resource.In(dir, inInput.Source, inInput.Params, inInput.Version, logger)
+	version, metadata, err := resource.In(outDir, inInput.Source, inInput.Params, inInput.Version, logger)
 	if err != nil {
 		return nil, err
 	}
@@ -216,7 +216,7 @@ func in(resource Resource, dir string, input []byte) ([]byte, error) {
 	return json.Marshal(output)
 }
 
-func out(resource Resource, dir string, input []byte) ([]byte, error) {
+func out(resource Resource, inDir string, input []byte) ([]byte, error) {
 	var outInput OutInput
 	err := json.Unmarshal(input, &outInput)
 	if err != nil {
@@ -230,7 +230,7 @@ func out(resource Resource, dir string, input []byte) ([]byte, error) {
 		logger = NewLogger("info")
 	}
 
-	version, metadata, err := resource.Out(dir, outInput.Source, outInput.Params, logger)
+	version, metadata, err := resource.Out(inDir, outInput.Source, outInput.Params, logger)
 	if err != nil {
 		return nil, err
 	}
@@ -266,10 +266,10 @@ func Check(resource Resource) {
 // an instance of the resource and pass it to this function.
 func In(resource Resource) {
 	if len(os.Args) < 2 {
-		internalLogger.Errorf("missing directory argument")
+		internalLogger.Errorf("missing output directory argument")
 		os.Exit(1)
 	}
-	dir := os.Args[1]
+	outDir := os.Args[1]
 
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -277,7 +277,7 @@ func In(resource Resource) {
 		os.Exit(1)
 	}
 
-	output, err := in(resource, dir, input)
+	output, err := in(resource, outDir, input)
 	if err != nil {
 		internalLogger.Errorf(err.Error())
 		os.Exit(1)
@@ -291,10 +291,10 @@ func In(resource Resource) {
 // an instance of the resource and pass it to this function.
 func Out(resource Resource) {
 	if len(os.Args) < 2 {
-		internalLogger.Errorf("missing directory argument")
+		internalLogger.Errorf("missing input directory argument")
 		os.Exit(1)
 	}
-	dir := os.Args[1]
+	inDir := os.Args[1]
 
 	input, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
@@ -302,7 +302,7 @@ func Out(resource Resource) {
 		os.Exit(1)
 	}
 
-	output, err := out(resource, dir, input)
+	output, err := out(resource, inDir, input)
 	if err != nil {
 		internalLogger.Errorf(err.Error())
 		os.Exit(1)
