@@ -84,7 +84,7 @@ func NewLogger(level string) *Logger {
 func (l *Logger) Errorf(message string, args ...interface{}) {
 	if l.Level >= errorLevel {
 		colorMessage := fmt.Sprintf("\033[1;31m%s\033[0m\n", message)
-		fmt.Fprintf(os.Stderr, colorMessage)
+		fmt.Fprintf(os.Stderr, colorMessage, args...)
 	}
 }
 
@@ -92,7 +92,7 @@ func (l *Logger) Errorf(message string, args ...interface{}) {
 func (l *Logger) Warnf(message string, args ...interface{}) {
 	if l.Level >= warnLevel {
 		colorMessage := fmt.Sprintf("\033[1;33m%s\033[0m\n", message)
-		fmt.Fprintf(os.Stderr, colorMessage)
+		fmt.Fprintf(os.Stderr, colorMessage, args...)
 	}
 }
 
@@ -100,7 +100,7 @@ func (l *Logger) Warnf(message string, args ...interface{}) {
 func (l *Logger) Infof(message string, args ...interface{}) {
 	if l.Level >= infoLevel {
 		colorMessage := fmt.Sprintf("\033[1;32m%s\033[0m\n", message)
-		fmt.Fprintf(os.Stderr, colorMessage)
+		fmt.Fprintf(os.Stderr, colorMessage, args...)
 	}
 }
 
@@ -108,7 +108,7 @@ func (l *Logger) Infof(message string, args ...interface{}) {
 func (l *Logger) Debugf(message string, args ...interface{}) {
 	if l.Level >= debugLevel {
 		colorMessage := fmt.Sprintf("\033[1;34m%s\033[0m\n", message)
-		fmt.Fprintf(os.Stderr, colorMessage)
+		fmt.Fprintf(os.Stderr, colorMessage, args...)
 	}
 }
 
