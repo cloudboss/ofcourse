@@ -54,7 +54,7 @@ func (r *Resource) Check(source oc.Source, version oc.Version, logger *oc.Logger
 		if err != nil {
 			return nil, err
 		}
-		count = stconv.Itoa(i + 1)
+		count = strconv.Itoa(i + 1)
 	}
 
 	// In Concourse, a version is an arbitrary set of string keys and string values.
