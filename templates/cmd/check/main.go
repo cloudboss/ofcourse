@@ -2,7 +2,7 @@ package main
 
 import (
 	"{{ .ImportPath }}/resource"
-	"github.com/cloudboss/ofcourse/pkg/ofcourse"
+	"github.com/cloudboss/ofcourse/ofcourse"
 )
 
 func main() {
