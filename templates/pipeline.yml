@@ -1,0 +1,24 @@
+resource_types:
+- name: {{ .Resource }}
+  type: docker-image
+  source:
+    repository: {{ .DockerRegistry }}
+
+resources:
+- name: {{ .Resource }}
+  type: {{ .Resource }}
+  check_every: 5m
+  source:
+    # Every resource created using ofcourse will have `log_level`
+    # as an available option in the source configuration. If not
+    # given, it defaults to `info`.
+    log_level: debug
+
+jobs:
+- name: do-it
+  plan:
+  - get: {{ .Resource }}
+    trigger: true
+  - put: {{ .Resource }}
+    params:
+      version_path: {{ .Resource }}/version
