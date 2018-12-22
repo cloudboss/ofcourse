@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	testLogger = oc.NewLogger(oc.DebugLevel)
+	testLogger = oc.NewLogger(oc.SilentLevel)
 )
 
 func TestCheck(t *testing.T) {

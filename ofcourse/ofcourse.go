@@ -30,6 +30,8 @@ import (
 )
 
 const (
+	// SilentLevel for logging.
+	SilentLevel = "silent"
 	// ErrorLevel for logging.
 	ErrorLevel = "error"
 	// WarnLevel for logging.
@@ -41,7 +43,8 @@ const (
 )
 
 const (
-	errorLevel = iota
+	silentLevel = iota
+	errorLevel
 	warnLevel
 	infoLevel
 	debugLevel
@@ -66,6 +69,8 @@ type Logger struct {
 func NewLogger(level string) *Logger {
 	var intLevel int
 	switch strings.ToLower(level) {
+	case SilentLevel:
+		intLevel = silentLevel
 	case ErrorLevel:
 		intLevel = errorLevel
 	case WarnLevel:
