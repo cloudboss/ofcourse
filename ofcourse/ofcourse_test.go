@@ -27,7 +27,8 @@ import (
 
 type resource struct{}
 
-func (r *resource) Check(source Source, version Version, logger *Logger) ([]Version, error) {
+func (r *resource) Check(source Source, version Version, env Environment,
+	logger *Logger) ([]Version, error) {
 	versions := []Version{
 		{
 			"c": "d",
@@ -37,7 +38,7 @@ func (r *resource) Check(source Source, version Version, logger *Logger) ([]Vers
 }
 
 func (r *resource) In(outDir string, source Source, params Params,
-	version Version, logger *Logger) (Version, Metadata, error) {
+	version Version, env Environment, logger *Logger) (Version, Metadata, error) {
 	newVersion := Version{
 		"c": "d",
 	}
@@ -51,7 +52,7 @@ func (r *resource) In(outDir string, source Source, params Params,
 }
 
 func (r *resource) Out(inDir string, source Source, params Params,
-	logger *Logger) (Version, Metadata, error) {
+	env Environment, logger *Logger) (Version, Metadata, error) {
 	version := Version{
 		"c": "d",
 	}
@@ -66,20 +67,21 @@ func (r *resource) Out(inDir string, source Source, params Params,
 
 type emptyResource struct{}
 
-func (r *emptyResource) Check(source Source, version Version, logger *Logger) ([]Version, error) {
+func (r *emptyResource) Check(source Source, version Version, env Environment,
+	logger *Logger) ([]Version, error) {
 	versions := []Version{}
 	return versions, nil
 }
 
 func (r *emptyResource) In(outDir string, source Source, params Params,
-	version Version, logger *Logger) (Version, Metadata, error) {
+	version Version, env Environment, logger *Logger) (Version, Metadata, error) {
 	newVersion := Version{}
 	metadata := Metadata{}
 	return newVersion, metadata, nil
 }
 
 func (r *emptyResource) Out(inDir string, source Source, params Params,
-	logger *Logger) (Version, Metadata, error) {
+	env Environment, logger *Logger) (Version, Metadata, error) {
 	version := Version{}
 	metadata := Metadata{}
 	return version, metadata, nil
@@ -217,5 +219,95 @@ func Test_out(t *testing.T) {
 	for _, test := range tests {
 		output, _ := out(eResource, "foo", test.input)
 		assert.Equal(t, output, test.output)
+	}
+}
+
+func Test_environmentGet(t *testing.T) {
+	testsDefault := []struct {
+		envVars      map[string]string
+		variable     string
+		defaultValue string
+		value        string
+	}{
+		{
+			envVars:      map[string]string{},
+			variable:     "PATH",
+			defaultValue: "/bin",
+			value:        "/bin",
+		},
+		{
+			envVars: map[string]string{
+				"PATH": "/bin:/usr/bin",
+			},
+			variable:     "PATH",
+			defaultValue: "",
+			value:        "/bin:/usr/bin",
+		},
+		{
+			envVars: map[string]string{
+				"PATH": "/bin:/usr/bin",
+			},
+			variable:     "PATH",
+			defaultValue: "/sbin:/usr/sbin",
+			value:        "/bin:/usr/bin",
+		},
+	}
+	testsNoDefault := []struct {
+		envVars  map[string]string
+		variable string
+		value    string
+	}{
+		{
+			envVars:  map[string]string{},
+			variable: "PATH",
+			value:    "",
+		},
+		{
+			envVars: map[string]string{
+				"PATH": "/bin:/usr/bin",
+			},
+			variable: "PATH",
+			value:    "/bin:/usr/bin",
+		},
+	}
+	for _, test := range testsDefault {
+		env := NewEnvironment(test.envVars)
+		value := env.Get(test.variable, test.defaultValue)
+		assert.Equal(t, test.value, value)
+	}
+	for _, test := range testsNoDefault {
+		env := NewEnvironment(test.envVars)
+		value := env.Get(test.variable)
+		assert.Equal(t, test.value, value)
+	}
+}
+
+func Test_environmentGetAll(t *testing.T) {
+	tests := []struct {
+		envVars  map[string]string
+		variable string
+		ok       bool
+	}{
+		{
+			envVars: map[string]string{
+				"PATH": "/bin:/usr/bin",
+			},
+			variable: "HOME",
+			ok:       false,
+		},
+		{
+			envVars: map[string]string{
+				"PATH": "/bin:/usr/bin",
+			},
+			variable: "PATH",
+			ok:       true,
+		},
+	}
+	for _, test := range tests {
+		env := NewEnvironment(test.envVars)
+		variables := env.GetAll()
+		assert.Equal(t, test.envVars, variables)
+		_, ok := variables[test.variable]
+		assert.Equal(t, test.ok, ok)
 	}
 }

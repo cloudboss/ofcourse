@@ -117,6 +117,65 @@ func (l *Logger) Debugf(message string, args ...interface{}) {
 	}
 }
 
+type environment struct {
+	variables map[string]string
+}
+
+// EnvVarMap returns the current environment as a map[string]string. This
+// may be used for generating test environments based on the current environment.
+func EnvVarMap() map[string]string {
+	vars := map[string]string{}
+	for _, v := range os.Environ() {
+		parts := strings.Split(v, "=")
+		if len(parts) < 2 {
+			// This is unlikely, as os.Environ() returns an
+			// array of strings in the form key=value.
+			continue
+		}
+		key := parts[0]
+		value := strings.Join(parts[1:], "=")
+		vars[key] = value
+	}
+	return vars
+}
+
+// Environment represents the environment of a `check`, `in`, or `out` process.
+// It is passed to Resource functions to enable easier testing than if calling
+// `os.Getenv` within the function.
+type Environment interface {
+	Get(string, ...string) string
+	GetAll() map[string]string
+}
+
+// NewEnvironment returns the current environment, or one from the optional variables.
+func NewEnvironment(variables ...map[string]string) Environment {
+	if len(variables) > 0 {
+		return &environment{
+			variables: variables[0],
+		}
+	}
+	return &environment{
+		variables: EnvVarMap(),
+	}
+}
+
+// Get is used to get an environment variable, returning `defaultValue` if not found.
+func (e *environment) Get(variable string, defaultValue ...string) string {
+	v, ok := e.variables[variable]
+	if !ok {
+		if len(defaultValue) > 0 {
+			return defaultValue[0]
+		}
+		return ""
+	}
+	return v
+}
+
+// GetAll is used to get all environment variables.
+func (e *environment) GetAll() map[string]string {
+	return e.variables
+}
+
 // Version represents Concourse a version, which is a set of key/value pairs.
 type Version map[string]string
 
@@ -163,9 +222,9 @@ type inOutOutput struct {
 // Resource is a type that contains Check, In, and Out methods. The user of this
 // library must implement this interface.
 type Resource interface {
-	Check(src Source, ver Version, log *Logger) ([]Version, error)
-	In(outDir string, src Source, par Params, ver Version, log *Logger) (Version, Metadata, error)
-	Out(inDir string, src Source, par Params, log *Logger) (Version, Metadata, error)
+	Check(src Source, ver Version, env Environment, log *Logger) ([]Version, error)
+	In(outDir string, src Source, par Params, ver Version, env Environment, log *Logger) (Version, Metadata, error)
+	Out(inDir string, src Source, par Params, env Environment, log *Logger) (Version, Metadata, error)
 }
 
 func check(resource Resource, input []byte) ([]byte, error) {
@@ -180,7 +239,8 @@ func check(resource Resource, input []byte) ([]byte, error) {
 		logger = NewLogger(logLevel)
 	}
 
-	versions, err := resource.Check(checkInput.Source, checkInput.Version, logger)
+	versions, err := resource.Check(checkInput.Source, checkInput.Version,
+		NewEnvironment(), logger)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +265,8 @@ func in(resource Resource, outDir string, input []byte) ([]byte, error) {
 		logger = NewLogger(logLevel)
 	}
 
-	version, metadata, err := resource.In(outDir, inInput.Source, inInput.Params, inInput.Version, logger)
+	version, metadata, err := resource.In(outDir, inInput.Source, inInput.Params,
+		inInput.Version, NewEnvironment(), logger)
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +290,8 @@ func out(resource Resource, inDir string, input []byte) ([]byte, error) {
 		logger = NewLogger(logLevel)
 	}
 
-	version, metadata, err := resource.Out(inDir, outInput.Source, outInput.Params, logger)
+	version, metadata, err := resource.Out(inDir, outInput.Source,
+		outInput.Params, NewEnvironment(), logger)
 	if err != nil {
 		return nil, err
 	}

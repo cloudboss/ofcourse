@@ -17,6 +17,7 @@ var (
 )
 
 func TestCheck(t *testing.T) {
+	env := oc.NewEnvironment()
 	var testCases = []struct {
 		sourceIn    oc.Source
 		versionIn   oc.Version
@@ -45,13 +46,14 @@ func TestCheck(t *testing.T) {
 
 	for _, tc := range testCases {
 		r := Resource{}
-		versions, err := r.Check(tc.sourceIn, tc.versionIn, testLogger)
+		versions, err := r.Check(tc.sourceIn, tc.versionIn, env, testLogger)
 		assert.Equal(t, tc.versionsOut, versions)
 		assert.Equal(t, tc.err, err)
 	}
 }
 
 func TestIn(t *testing.T) {
+	env := oc.NewEnvironment()
 	var testCases = []struct {
 		sourceIn    oc.Source
 		paramsIn    oc.Params
@@ -85,7 +87,7 @@ func TestIn(t *testing.T) {
 		defer os.RemoveAll(td)
 
 		r := Resource{}
-		version, metadata, err := r.In(td, tc.sourceIn, tc.paramsIn, tc.versionIn, testLogger)
+		version, metadata, err := r.In(td, tc.sourceIn, tc.paramsIn, tc.versionIn, env, testLogger)
 
 		// First test the return values
 		assert.Equal(t, tc.versionIn, version)
@@ -109,6 +111,7 @@ func TestIn(t *testing.T) {
 }
 
 func TestOut(t *testing.T) {
+	env := oc.NewEnvironment()
 	var testCases = []struct {
 		sourceIn    oc.Source
 		paramsIn    oc.Params
@@ -157,7 +160,7 @@ func TestOut(t *testing.T) {
 		}
 
 		r := Resource{}
-		version, metadata, err := r.Out(td, tc.sourceIn, tc.paramsIn, testLogger)
+		version, metadata, err := r.Out(td, tc.sourceIn, tc.paramsIn, env, testLogger)
 		assert.Equal(t, tc.versionOut, version)
 		assert.Equal(t, tc.metadataOut, metadata)
 		assert.Equal(t, tc.err, err)

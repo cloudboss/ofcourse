@@ -44,7 +44,8 @@ type Resource struct{}
 
 // Check implements the ofcourse.Resource Check method, corresponding to the /opt/resource/check command.
 // This is called when Concourse does its resource checks, or when the `fly check-resource` command is run.
-func (r *Resource) Check(source oc.Source, version oc.Version, logger *oc.Logger) ([]oc.Version, error) {
+func (r *Resource) Check(source oc.Source, version oc.Version, env oc.Environment,
+	logger *oc.Logger) ([]oc.Version, error) {
 	// Returned `versions` should be all of the versions since the one given in the `version`
 	// argument. If `version` is nil, then return the first available version. In many cases there
 	// will be only one version to return, depending on the type of resource being implemented.
@@ -77,7 +78,7 @@ func (r *Resource) Check(source oc.Source, version oc.Version, logger *oc.Logger
 // In implements the ofcourse.Resource In method, corresponding to the /opt/resource/in command.
 // This is called when a Concourse job does `get` on the resource.
 func (r *Resource) In(outputDirectory string, source oc.Source, params oc.Params, version oc.Version,
-	logger *oc.Logger) (oc.Version, oc.Metadata, error) {
+	env oc.Environment, logger *oc.Logger) (oc.Version, oc.Metadata, error) {
 	// Demo of logging. Resources should never use fmt.Printf or anything that writes
 	// to standard output, as it will corrupt the JSON output expected by Concourse.
 	logger.Errorf("This is an error")
@@ -122,7 +123,7 @@ func (r *Resource) In(outputDirectory string, source oc.Source, params oc.Params
 // Out implements the ofcourse.Resource Out method, corresponding to the /opt/resource/out command.
 // This is called when a Concourse job does a `put` on the resource.
 func (r *Resource) Out(inputDirectory string, source oc.Source, params oc.Params,
-	logger *oc.Logger) (oc.Version, oc.Metadata, error) {
+	env oc.Environment, logger *oc.Logger) (oc.Version, oc.Metadata, error) {
 	// The `Out` function does not receive a `version` argument. Instead, we
 	// will read the version from the file created by the `In` function, assuming
 	// the pipeline does a `get` of this resource. The path to the version file
