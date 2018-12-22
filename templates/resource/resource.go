@@ -3,6 +3,7 @@ package resource
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	oc "github.com/cloudboss/ofcourse/ofcourse"
 	"io/ioutil"
@@ -31,6 +32,13 @@ import (
 // the way this example does. If you have many such resources that are checked frequently across many
 // pipelines, it will put a lot of load on the database's CPU.
 
+var (
+	// ErrVersion means version map is malformed
+	ErrVersion = errors.New(`key "count" not found in version map`)
+	// ErrParam means parameters are malformed
+	ErrParam = errors.New(`missing "version_path" parameter`)
+)
+
 // Resource implements the ofcourse.Resource interface.
 type Resource struct{}
 
@@ -48,7 +56,7 @@ func (r *Resource) Check(source oc.Source, version oc.Version, logger *oc.Logger
 	if version != nil {
 		oldCount, ok := version["count"]
 		if !ok {
-			return nil, fmt.Errorf(`key "count" not found in version map`)
+			return nil, ErrVersion
 		}
 		i, err := strconv.Atoi(oldCount)
 		if err != nil {
@@ -121,7 +129,7 @@ func (r *Resource) Out(inputDirectory string, source oc.Source, params oc.Params
 	// must be passed in the `put` parameters.
 	versionPath, ok := params["version_path"]
 	if !ok {
-		return nil, nil, fmt.Errorf(`missing "version_path" parameter`)
+		return nil, nil, ErrParam
 	}
 
 	// The `inputDirectory` argument is a directory containing subdirectories for
