@@ -4,7 +4,7 @@ This is a library and a project skeleton generator for making your own [Concours
 
 A Concourse resource consists of a Docker image containing three executables: `/opt/resource/check`, `/opt/resource/in`, and `/opt/resource/out`. When these are called by Concourse, they receive a JSON payload through standard input. They communicate back to Concourse by printing JSON back to standard output.
 
-This library reduces the amount of boilerplate required by allowing you to implement just three methods `Check`, `In`, and `Out`, which handles the serializing of JSON to and from standard output and input. The methods instead receive all of their inputs via arguments, and send their output through normal return values.
+This library reduces the amount of boilerplate required by allowing you to implement just three methods `Check`, `In`, and `Out`. These methods receive all of their inputs via arguments, and send their output through normal return values. The library handles the serializing of JSON to and from standard output and input.
 
 The project skeleton generator creates a simple resource that works out of the box. The project includes a Dockerfile, a Makefile, and a test suite with coverage for `Check`, `In`, and `Out`. There is also a sample pipeline that you can use to try out the resource immediately after running `make`, which builds the image and pushes it to your registry.
 
