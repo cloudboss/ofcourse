@@ -107,6 +107,10 @@ For the `docker` and `publish` targets, if `VERSION` is passed to `make`, then t
 > make publish VERSION=1.2.3
 ```
 
+# Project README
+
+A skeleton `README.md` file is generated for the project, which should be filled in with valid descriptions, and should document the source config and parameters required to make the resource function properly. The format follows the ones used by builtin Concourse resources, for example the [git resource](https://github.com/concourse/git-resource) or the [s3 resource](https://github.com/concourse/s3-resource).
+
 # Logging
 
 Since Concourse resources communicate back to Concourse over standard output, they cannot print information to standard output. For this reason, each of the `Check`, `In`, and `Out` methods receive a `logger` argument that will print to standard error, using colored log levels. The log level may be configured in the `source` of every resource that uses the `ofcourse` library. The available levels are `debug`, `info`, `warn`, `error`, and `silent`.

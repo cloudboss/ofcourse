@@ -7,8 +7,8 @@ _output/go/bin/go-bindata:
 
 ofcourse/bindata.go: _output/go/bin/go-bindata templates/resource/resource.go \
 	templates/resource/resource_test.go templates/Dockerfile templates/Makefile \
-	templates/pipeline.yml templates/go.mod templates/cmd/check/main.go \
-	templates/cmd/out/main.go templates/cmd/in/main.go
+	templates/README.md templates/pipeline.yml templates/go.mod \
+	templates/cmd/check/main.go templates/cmd/out/main.go templates/cmd/in/main.go
 	./_output/go/bin/go-bindata \
 		-o ofcourse/bindata.go \
 		-pkg ofcourse \
