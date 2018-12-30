@@ -6,7 +6,7 @@ A Concourse resource consists of a Docker image containing three executables: `/
 
 This library reduces the amount of boilerplate required by allowing you to implement just three methods `Check`, `In`, and `Out`, which handles the serializing of JSON to and from standard output and input. The methods instead receive all of their inputs via arguments, and send their output through normal return values.
 
-The project skeleton generator creates a simple resource that works out of the box. The project includes a Dockerfile, a Makefile, and a test suite with coverage for `Check`, `In`, and `Out`. There is also a sample pipeline that you can use to try out the resource immediately after running `make docker` and pushing the image to your registry.
+The project skeleton generator creates a simple resource that works out of the box. The project includes a Dockerfile, a Makefile, and a test suite with coverage for `Check`, `In`, and `Out`. There is also a sample pipeline that you can use to try out the resource immediately after running `make`, which builds the image and pushes it to your registry.
 
 # Generating a Project
 
@@ -39,19 +39,13 @@ Change to the directory that was created and build the docker image:
 
 ```
 > cd noop
-> make docker
+> make
 ```
 
-Now push the image to your registry. It must be the same one given in the `-R` argument to `ofcourse init`.
+Now push the image to your registry. Note that you may need to [log in](https://docs.docker.com/engine/reference/commandline/login/) to the registry before running this.
 
 ```
-docker push cloudboss/concourse-noop-resource
-```
-
-If `VERSION` is passed to `make`, then the docker image will be tagged with that version:
-
-```
-> make docker VERSION=v1.2.3
+> make publish
 ```
 
 Now that the image has been pushed to a registry, you can create the sample pipeline with the `fly` command:
@@ -92,6 +86,25 @@ go: finding github.com/stretchr/testify/assert latest
 --- PASS: TestOut (0.00s)
 PASS
 ok  	github.com/cloudboss/concourse-noop-resource/resource	0.003s
+```
+
+# Project Makefile
+
+The project Makefile contains the following targets:
+
+`docker`: This does a `docker build`, and is the default `make` target.
+
+`publish`: This does a `docker push`.
+
+`test`: This runs the project's go tests.
+
+`fmt`: This runs `gofmt` on the project's go files.
+
+For the `docker` and `publish` targets, if `VERSION` is passed to `make`, then the docker image will be tagged with that version.
+
+```
+> make VERSION=1.2.3
+> make publish VERSION=1.2.3
 ```
 
 # Logging
