@@ -14,8 +14,10 @@ First read the [official documentation](https://concourse-ci.org/implementing-re
 
 Download and unzip the latest `ofcourse` release from [GitHub](https://github.com/cloudboss/ofcourse/releases).
 
+Example for Linux:
+
 ```
-> curl -O https://github.com/cloudboss/ofcourse/releases/download/v0.1.0/ofcourse_linux_amd64.zip
+> curl -L -O https://github.com/cloudboss/ofcourse/releases/download/v0.2.1/ofcourse_linux_amd64.zip
 > unzip ofcourse_linux_amd64.zip
 ```
 
