@@ -10,7 +10,7 @@ The project skeleton generator creates a simple resource that works out of the b
 
 # Generating a Project
 
-First read the [official documentation](https://concourse-ci.org/implementing-resources.html) on implementing your own resource.
+First read the [official documentation](https://concourse-ci.org/implementing-resource-types.html) on implementing your own resource.
 
 Download and unzip the latest `ofcourse` release from [GitHub](https://github.com/cloudboss/ofcourse/releases).
 
