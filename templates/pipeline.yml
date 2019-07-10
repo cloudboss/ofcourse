@@ -1,6 +1,6 @@
 resource_types:
 - name: {{ .Resource }}
-  type: docker-image
+  type: registry-image
   source:
     repository: {{ .DockerRegistry }}
 
