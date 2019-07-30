@@ -1,10 +1,10 @@
 package main
 
 import (
-        "{{ .ImportPath }}/resource"
-        "github.com/cloudboss/ofcourse/ofcourse"
+	"{{ .ImportPath }}/resource"
+	"github.com/cloudboss/ofcourse/ofcourse"
 )
 
 func main() {
-        ofcourse.Out(&resource.Resource{})
+	ofcourse.Out(&resource.Resource{})
 }
