@@ -15,7 +15,7 @@ Write a description of the resource here.
 ```yaml
 resource_types:
 - name: {{ .Resource }}
-  type: docker-image
+  type: registry-image
   source:
     repository: {{ .DockerRegistry }}
 
