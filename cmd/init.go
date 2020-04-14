@@ -49,7 +49,7 @@ func init() {
 		"", "Name of Concourse resource")
 	initCmd.Flags().StringVarP(&dockerRegistry, "docker-registry", "R",
 		"", "Registry where resource docker image will be pushed")
-	initCmd.Flags().StringVarP(&importPath, "importPath", "i",
+	initCmd.Flags().StringVarP(&importPath, "import-path", "i",
 		"", "Go import path where code for resource will be located")
 }
 
