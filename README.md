@@ -17,7 +17,7 @@ Download and unzip the latest `ofcourse` release from [GitHub](https://github.co
 Example for Linux:
 
 ```
-> curl -L -O https://github.com/cloudboss/ofcourse/releases/download/v0.2.1/ofcourse_linux_amd64.zip
+> curl -L -O https://github.com/cloudboss/ofcourse/releases/download/v0.2.2/ofcourse_linux_amd64.zip
 > unzip ofcourse_linux_amd64.zip
 ```
 
